@@ -1,0 +1,243 @@
+/* ============================================================
+   AboutSection.module.css
+   ============================================================ */
+
+/* ── Section shell ─────────────────────────────────────────── */
+.about {
+  position: relative;
+  background: var(--black);
+  padding-bottom: 140px !important;
+  overflow: hidden;
+}
+
+/* ── R3F canvas wrapper ─────────────────────────────────────── */
+.canvasWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.canvasWrap canvas {
+  pointer-events: none !important;
+}
+
+/* ── Content layer ──────────────────────────────────────────── */
+.inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Two-col grid ───────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center; /* Align items to center to balance the tall carousel */
+  margin-top: 8px;
+}
+
+/* ── Left column ────────────────────────────────────────────── */
+.left {
+  display: flex;
+  flex-direction: column;
+}
+
+.bigText {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 6vw, 88px);
+  line-height: 0.92;
+  color: var(--white);
+  margin-bottom: 48px;
+  text-shadow: 0 0 40px rgba(0, 0, 0, 0.9), 0 2px 8px rgba(0, 0, 0, 1);
+}
+
+.body {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--gray-400);
+  max-width: 460px;
+  margin-bottom: 16px;
+  font-weight: 300;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.055);
+  padding: 18px 22px;
+}
+
+.separator {
+  width: 56px;
+  height: 1px;
+  background: var(--gray-800);
+  margin: 20px 0 20px 0;
+}
+
+/* ── Right column ─────────────────────────────── */
+.right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Revolving Door 3D Carousel Scene ──────────────────────── */
+.carouselScene {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  perspective: 1200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(-20px);
+  --carousel-radius: 280px;
+}
+
+.carouselInteractive {
+  position: relative;
+  width: 260px;
+  height: 340px;
+  transform-style: preserve-3d;
+  /* Hardware acceleration for crisp drag */
+  will-change: transform;
+}
+
+/* ── Revolving Skill Card ─────────────────────────────────── */
+/* Position each card absolutely inside the central spinning .carousel */
+.revolvingCard {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  cursor: default;
+}
+
+.revolvingCardInner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+  /* Double-sided face so we can see it as it rotates back */
+  backface-visibility: visible;
+}
+
+.revolvingCardInner.hovered {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.25);
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.8),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  transform: scale(1.08) translateZ(10px);
+}
+
+.skillCardShine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.15) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: skewX(-20deg);
+  transition: all 0.7s ease;
+}
+
+.revolvingCardInner.hovered .skillCardShine {
+  left: 200%;
+}
+
+.skillCardEdge {
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1px;
+  opacity: 0.4;
+  transition: opacity 0.3s;
+}
+
+.revolvingCardInner.hovered .skillCardEdge {
+  opacity: 1;
+}
+
+.skillIcon {
+  font-size: 112px;
+  color: var(--white);
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
+  transition: transform 0.4s ease;
+}
+
+.revolvingCardInner.hovered .skillIcon {
+  transform: scale(1.15) translateZ(20px);
+}
+
+.skillName {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  transition: color 0.3s ease;
+}
+
+.revolvingCardInner.hovered .skillName {
+  color: var(--white);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+  .carouselScene {
+    height: 480px;
+    --carousel-radius: 220px;
+  }
+  .carouselInteractive {
+    width: 200px;
+    height: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .about {
+    padding-bottom: 80px !important;
+  }
+  .carouselScene {
+    transform: scale(0.85) translateY(-10px);
+    height: 380px;
+    perspective: 1000px; /* Reduce perspective mapping for mobile */
+    --carousel-radius: 140px;
+  }
+  .carouselInteractive {
+    width: 160px;
+    height: 220px;
+  }
+}

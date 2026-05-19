@@ -1,0 +1,619 @@
+"use client";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { PROJECTS } from "@/lib/projects";
+import ProjectCard from "@/components/ui/ProjectCard";
+import styles from "./ProjectsSection.module.css";
+
+export default function ProjectsSection() {
+  const sectionRef = useScrollReveal();
+  return (
+    <section
+      id="projects"
+      className={`${styles.projects} section-pad`}
+      ref={sectionRef as React.RefObject<HTMLElement>}
+    >
+      <div className={`${styles.header}`}>
+        <div>
+          <div className="section-label reveal">Selected Work</div>
+          <h2 className="section-title reveal reveal-delay-1">Projects</h2>
+        </div>
+        <span className={`${styles.count} reveal reveal-delay-1`}>
+          {String(PROJECTS.length).padStart(2, "0")} Works
+        </span>
+      </div>
+
+      {/* Bento grid */}
+      <div className={styles.bento}>
+        {PROJECTS.map((project, i) => (
+          <ProjectCard
+            key={project.id}
+            project={project}
+            delayClass={`reveal-delay-${Math.min(i % 4, 3) as 0 | 1 | 2 | 3}`}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+.projects { background: var(--gray-900); }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 64px;
+}
+
+.count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gray-600);
+  letter-spacing: 0.1em;
+}
+
+/* 12-column bento */
+.bento {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  grid-auto-rows: 120px;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .bento { grid-template-columns: 1fr; grid-auto-rows: 260px; }
+}
+
+
+"use client";
+import type { Project } from "@/lib/projects";
+import styles from "./ProjectCard.module.css";
+import clsx from "clsx";
+
+/* SVG line-art shapes per card index */
+const ARTS = [
+  /* 0 */ (
+    <svg viewBox="0 0 300 300" fill="none" stroke="white" strokeWidth="0.7">
+      <circle cx="150" cy="150" r="120"/><circle cx="150" cy="150" r="80"/>
+      <circle cx="150" cy="150" r="40"/>
+      <line x1="150" y1="30" x2="150" y2="270"/>
+      <line x1="30" y1="150" x2="270" y2="150"/>
+    </svg>
+  ),
+  /* 1 */ (
+    <svg viewBox="0 0 240 240" fill="none" stroke="white" strokeWidth="0.8">
+      {[0,30,60,90,120,150,180,210].map(a=>{
+        const r=Math.PI*a/180;
+        return <line key={a} x1={120+110*Math.cos(r)} y1={120+110*Math.sin(r)} x2={120-110*Math.cos(r)} y2={120-110*Math.sin(r)}/>;
+      })}
+      <circle cx="120" cy="120" r="40"/>
+    </svg>
+  ),
+  /* 2 */ (
+    <svg viewBox="0 0 220 220" fill="none" stroke="white" strokeWidth="0.8">
+      <rect x="20" y="20" width="180" height="180"/>
+      <rect x="50" y="50" width="120" height="120"/>
+      <rect x="80" y="80" width="60" height="60"/>
+      <line x1="20" y1="20" x2="200" y2="200"/>
+      <line x1="200" y1="20" x2="20" y2="200"/>
+    </svg>
+  ),
+  /* 3 */ (
+    <svg viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="0.8">
+      <polygon points="100,10 190,55 190,145 100,190 10,145 10,55"/>
+      <polygon points="100,40 162,73 162,127 100,160 38,127 38,73"/>
+      <polygon points="100,70 134,88 134,112 100,130 66,112 66,88"/>
+    </svg>
+  ),
+  /* 4 */ (
+    <svg viewBox="0 0 220 220" fill="none" stroke="white" strokeWidth="0.8">
+      {[0,44,88,132,176,220].map(v=>(
+        <g key={v}>
+          <line x1="0" y1={v} x2="220" y2={v}/>
+          <line x1={v} y1="0" x2={v} y2="220"/>
+        </g>
+      ))}
+    </svg>
+  ),
+  /* 5 */ (
+    <svg viewBox="0 0 200 200" fill="none" stroke="white" strokeWidth="0.8">
+      <path d="M100 10 L190 100 L100 190 L10 100 Z"/>
+      <path d="M100 40 L160 100 L100 160 L40 100 Z"/>
+      <path d="M100 70 L130 100 L100 130 L70 100 Z"/>
+      <circle cx="100" cy="100" r="8"/>
+    </svg>
+  ),
+];
+
+interface Props {
+  project: Project;
+  delayClass: string;
+}
+
+export default function ProjectCard({ project, delayClass }: Props) {
+  const artIndex = parseInt(project.number) - 1;
+
+  return (
+    <div
+      className={clsx(
+        styles.card,
+        "glass-card card-lift reveal",
+        delayClass,
+        // Grid spans come from data so layout is data-driven
+        project.colSpan,
+        project.rowSpan
+      )}
+    >
+      {/* Line art */}
+      <div className={styles.art} aria-hidden="true">
+        {ARTS[artIndex % ARTS.length]}
+      </div>
+
+      {/* Card number */}
+      <span className={styles.num}>{project.number}</span>
+
+      {/* Tags */}
+      <div className={styles.tags}>
+        {project.tags.map((tag) => (
+          <span key={tag} className={styles.tag}>{tag}</span>
+        ))}
+      </div>
+
+      {/* Footer label */}
+      <div className={styles.label}>
+        <h3 className={styles.title}>{project.title}</h3>
+        <p className={styles.tech}>{project.tech}</p>
+      </div>
+
+      {/* Glass overlay */}
+      <div className={styles.glassOverlay} aria-hidden="true" />
+    </div>
+  );
+}
+
+
+
+
+
+.card {
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.art {
+  position: absolute;
+  right: -20px;
+  top: -20px;
+  width: 55%;
+  height: 100%;
+  opacity: 0.12;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.art svg { width: 100%; height: 100%; }
+
+.num {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gray-600);
+  z-index: 2;
+}
+
+.tags {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 4px 8px;
+  backdrop-filter: blur(4px);
+  background: rgba(0,0,0,0.3);
+}
+
+.label {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 2;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2vw, 26px);
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.tech {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--gray-600);
+}
+
+.glassOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    transparent 40%,
+    rgba(0,0,0,0.7) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+
+
+
+
+"use client";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import styles from "./AboutSection.module.css";
+
+const SKILLS = ["React","TypeScript","Three.js","Figma","Motion","Node.js","Postgres","WebGL","Branding","Next.js","R3F","GLSL"];
+const STATS = [
+  { num: "06+", label: "Years of professional experience" },
+  { num: "48",  label: "Projects shipped globally" },
+  { num: "32",  label: "Satisfied clients worldwide" },
+  { num: "12",  label: "Design awards received" },
+];
+
+export default function AboutSection() {
+  const ref = useScrollReveal();
+  return (
+    <section id="about" className="section-pad" ref={ref as React.RefObject<HTMLElement>}>
+      <div className="section-label reveal">Who I Am</div>
+      <div className={styles.grid}>
+        <div className={styles.left}>
+          <h2 className={`${styles.bigText} reveal reveal-delay-1`}>
+            Crafting<br/>Digital<br/>Experiences<br/>That Last.
+          </h2>
+          <p className={`${styles.body} reveal reveal-delay-2`}>
+            I'm a multidisciplinary designer and developer based wherever the work takes me. I believe great design is invisible — it removes friction, solves real problems, and makes people feel something.
+          </p>
+          <div className={`${styles.separator} reveal reveal-delay-2`} />
+          <p className={`${styles.body} reveal reveal-delay-3`}>
+            My process is rooted in clarity. I work with founders, agencies, and creative studios to build products that are both beautiful and functional — never one at the expense of the other.
+          </p>
+          <div className={`${styles.chips} reveal reveal-delay-3`}>
+            {SKILLS.map(s => <span key={s} className="skill-chip">{s}</span>)}
+          </div>
+        </div>
+        <div className={styles.right}>
+          <div className={`${styles.stats} reveal reveal-delay-2`}>
+            {STATS.map(({ num, label }) => (
+              <div key={num} className={styles.statRow}>
+                <span className={styles.statNum}>{num}</span>
+                <span className={styles.statDesc}>{label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+
+
+
+
+
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.bigText {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 6vw, 88px);
+  line-height: 0.92;
+  color: var(--white);
+  margin-bottom: 48px;
+}
+
+.body {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--gray-400);
+  max-width: 460px;
+  margin-bottom: 24px;
+  font-weight: 300;
+}
+
+.separator {
+  width: 60px;
+  height: 1px;
+  background: var(--gray-800);
+  margin: 32px 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.stats { display: flex; flex-direction: column; gap: 0; }
+
+.statRow {
+  display: flex;
+  flex-direction: column;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--gray-800);
+}
+.statRow:first-child { border-top: 1px solid var(--gray-800); }
+
+.statNum {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 5vw, 72px);
+  line-height: 1;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.statDesc {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; gap: 60px; }
+}
+
+
+
+
+
+
+
+
+"use client";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
+import styles from "./ContactSection.module.css";
+
+export default function ContactSection() {
+  const ref = useScrollReveal();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // TODO: Wire up to email service (Resend, EmailJS, Formspree, etc.)
+    alert("Message sent! (replace with real submission logic)");
+  };
+
+  return (
+    <section id="contact" className={`${styles.contact} section-pad`} ref={ref as React.RefObject<HTMLElement>}>
+      <div className={`${styles.eyebrow} reveal`}>Get In Touch</div>
+      <h2 className={`${styles.title} reveal reveal-delay-1`}>
+        Let&apos;s<br/>
+        <span>Work</span><br/>
+        Together.
+      </h2>
+
+      <div className={styles.grid}>
+        {/* Form */}
+        <form className={`${styles.form} reveal reveal-delay-2`} onSubmit={handleSubmit}>
+          <div className={styles.formRow}>
+            <div className={styles.field}>
+              <label className={styles.label}>Name</label>
+              <input className="form-input" type="text" placeholder="Your full name" required />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>Email</label>
+              <input className="form-input" type="email" placeholder="your@email.com" required />
+            </div>
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Subject</label>
+            <input className="form-input" type="text" placeholder="What's this about?" />
+          </div>
+          <div className={styles.field}>
+            <label className={styles.label}>Message</label>
+            <textarea className="form-input" rows={6} placeholder="Tell me about your project..." required />
+          </div>
+          <button type="submit" className={`cta-btn ${styles.submitBtn}`}>
+            <span>Send Message</span>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </button>
+        </form>
+
+        {/* Info panel */}
+        <div className={`${styles.info} reveal reveal-delay-3`}>
+          <InfoItem icon="email" label="Email" value="hello@yourname.com" href="mailto:hello@yourname.com" />
+          <InfoItem icon="location" label="Based In" value="Your City, Country" />
+          <InfoItem icon="clock" label="Response Time" value="Within 24 hours" />
+
+          <div className={styles.socialRow}>
+            {["GitHub","LinkedIn","Twitter","Dribbble"].map(s => (
+              <a key={s} href="#" className="social-btn">{s}</a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Footer bar */}
+      <div className={styles.footerBar}>
+        <span className={styles.footerCopy}>© 2025 Your Name — All rights reserved</span>
+        <span className={styles.footerCopy}>Designed &amp; Built with precision</span>
+      </div>
+    </section>
+  );
+}
+
+/* ── Small info row ───────────────────────────────────────── */
+function InfoItem({ icon, label, value, href }: {
+  icon: "email" | "location" | "clock";
+  label: string;
+  value: string;
+  href?: string;
+}) {
+  const ICONS = {
+    email: <path d="M1 4l7 5 7-5M1 2h14a1 1 0 011 1v10a1 1 0 01-1 1H1a1 1 0 01-1-1V3a1 1 0 011-1z"/>,
+    location: <><path d="M8 1C5.24 1 3 3.24 3 6c0 4.25 5 9 5 9s5-4.75 5-9c0-2.76-2.24-5-5-5z"/><circle cx="8" cy="6" r="1.5"/></>,
+    clock: <><circle cx="8" cy="8" r="7"/><path d="M8 4v4l3 2"/></>,
+  };
+
+  return (
+    <div style={{display:"flex",gap:"16px",alignItems:"center",marginBottom:"24px"}}>
+      <div style={{
+        width:36,height:36,background:"var(--white)",borderRadius:"50%",
+        display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0
+      }}>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="black" strokeWidth="1">
+          {ICONS[icon]}
+        </svg>
+      </div>
+      <div>
+        <div style={{fontFamily:"var(--font-mono)",fontSize:10,letterSpacing:"0.18em",textTransform:"uppercase",color:"var(--gray-600)",marginBottom:4}}>
+          {label}
+        </div>
+        {href
+          ? <a href={href} style={{fontFamily:"var(--font-mono)",fontSize:13,color:"var(--white)",textDecoration:"none"}}>{value}</a>
+          : <span style={{fontFamily:"var(--font-mono)",fontSize:13,color:"var(--white)"}}>{value}</span>
+        }
+      </div>
+    </div>
+  );
+}
+
+
+
+
+
+
+
+
+.contact { background: var(--white); color: var(--black); }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.eyebrow::before {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: var(--gray-200);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 10vw, 140px);
+  line-height: 0.88;
+  color: var(--black);
+  margin-bottom: 80px;
+}
+.title span { color: transparent; -webkit-text-stroke: 2px var(--black); }
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+  margin-bottom: 80px;
+}
+
+.form { display: flex; flex-direction: column; gap: 20px; }
+.formRow { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.field { display: flex; flex-direction: column; gap: 8px; }
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+}
+
+/* Override form-input colors for white section */
+:global(.contact-section .form-input) {
+  background: rgba(0,0,0,0.03);
+  border-color: rgba(0,0,0,0.12);
+  color: var(--black);
+}
+:global(.contact-section .form-input::placeholder) { color: var(--gray-400); }
+:global(.contact-section .form-input:focus) {
+  border-color: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.05);
+}
+
+/* Invert CTA button for white bg */
+.submitBtn {
+  align-self: flex-start;
+  background: var(--black) !important;
+  color: var(--white) !important;
+  border-color: var(--black) !important;
+}
+.submitBtn::after { background: var(--white) !important; }
+.submitBtn:hover { color: var(--black) !important; }
+
+.info { padding-top: 8px; }
+.socialRow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 40px; }
+
+/* Invert social buttons */
+:global(.contact-section .social-btn) {
+  color: var(--gray-600);
+  border-color: var(--gray-200);
+}
+:global(.contact-section .social-btn:hover) {
+  color: var(--black);
+  border-color: var(--black);
+}
+
+.footerBar {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 48px;
+  border-top: 1px solid var(--gray-200);
+}
+.footerCopy {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
+@media (max-width: 768px) {
+  .grid { grid-template-columns: 1fr; }
+  .formRow { grid-template-columns: 1fr; }
+  .footerBar { flex-direction: column; gap: 12px; }
+}

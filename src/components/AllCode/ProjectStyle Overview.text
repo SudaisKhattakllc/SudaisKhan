@@ -1,0 +1,41 @@
+portfolio-nextjs/
+├── next.config.js          ← R3F transpile config (commented, ready)
+├── tailwind.config.ts
+├── tsconfig.json
+├── package.json
+└── src/
+    ├── app/
+    │   ├── layout.tsx      ← next/font, metadata, root providers slot
+    │   └── page.tsx        ← assembles sections
+    ├── styles/
+    │   └── globals.css     ← all CSS tokens + utility classes
+    ├── hooks/
+    │   ├── useScrollReveal.ts
+    │   └── useCursor.ts
+    ├── lib/
+    │   └── projects.ts     ← edit project data here
+    └── components/
+        ├── layout/
+        │   ├── Navbar.tsx
+        │   └── Navbar.module.css
+        ├── sections/
+        │   ├── HeroSection.tsx / .module.css
+        │   ├── ProjectsSection.tsx / .module.css
+        │   ├── AboutSection.tsx / .module.css
+        │   └── ContactSection.tsx / .module.css
+        └── ui/
+            ├── Cursor.tsx / .module.css
+            └── ProjectCard.tsx / .module.css
+
+
+
+
+
+
+
+
+
+
+
+
+            FileStatuspackage.json✅tsconfig.json✅next.config.js✅ (R3F-ready comments)tailwind.config.ts✅postcss.config.js✅src/styles/globals.css✅src/app/layout.tsx✅src/app/page.tsx✅src/hooks/useScrollReveal.ts✅src/hooks/useCursor.ts✅src/components/ui/Cursor.tsx✅src/components/ui/Cursor.module.css✅src/components/layout/Navbar.tsx✅src/components/layout/Navbar.module.css✅src/components/sections/HeroSection.tsx✅src/components/sections/HeroSection.module.css✅src/lib/projects.ts

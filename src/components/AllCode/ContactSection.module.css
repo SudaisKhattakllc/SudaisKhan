@@ -1,0 +1,359 @@
+/* ============================================================
+   ContactSection.module.css  —  2072 Edition
+   White/inverted section with hover-raise tile grid,
+   glass canvas panel, and premium form styling.
+   ============================================================ */
+
+/* ── SECTION SHELL ─────────────────────────────────────────── */
+.contact {
+  position: relative;
+  background: var(--white);
+  color: var(--black);
+  padding: 120px 80px 0;
+  overflow: hidden;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HOVER-RAISE GRID
+   Full-bleed background grid of small tiles.
+   Each tile lifts on :hover via CSS 3D transform.
+   perspective set on parent so transforms look 3D.
+───────────────────────────────────────────────────────────── */
+.hoverGrid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(14, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 1px;
+  background: transparent;
+  z-index: 0;
+  pointer-events: none;          /* tiles get pointer via own stacking */
+  perspective: 800px;
+}
+
+.hoverTile {
+  background: rgba(0, 0, 0, 0.028);
+  border: 1px solid rgba(0, 0, 0, 0.045);
+  transition:
+    transform  0.35s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+  transform-origin: center bottom;
+  pointer-events: all;           /* re-enable per-tile */
+  cursor: default;
+}
+
+.hoverTile:hover {
+  transform: translateZ(28px) scale(1.06);
+  background: rgba(0, 0, 0, 0.07);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 1;
+}
+
+/* ── CONTENT LAYER ─────────────────────────────────────────── */
+.inner {
+  position: relative;
+  z-index: 2;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TOP ROW  —  left: eyebrow+title  |  right: 3D canvas
+───────────────────────────────────────────────────────────── */
+.topRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  margin-bottom: 80px;
+}
+
+/* Eyebrow */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.eyebrow::before {
+  content: "";
+  width: 40px;
+  height: 1px;
+  background: var(--gray-200);
+  flex-shrink: 0;
+}
+
+/* Title */
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(72px, 9vw, 130px);
+  line-height: 0.88;
+  color: var(--black);
+}
+.title span {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--black);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   3D CANVAS PANEL
+───────────────────────────────────────────────────────────── */
+.canvasPanel {
+  position: relative;
+  height: 360px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #0a0a0a;           /* dark interior for contrast */
+  overflow: hidden;
+  cursor: pointer;
+  /* Subtle inset shadow */
+  box-shadow:
+    inset 0 0 80px rgba(255, 255, 255, 0.03),
+    0 20px 60px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.4s;
+}
+.canvasPanel:hover {
+  box-shadow:
+    inset 0 0 80px rgba(255, 255, 255, 0.06),
+    0 28px 80px rgba(0, 0, 0, 0.22);
+}
+
+/* Label overlay in corner */
+.canvasLabel {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+.canvasLabel span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   BOTTOM ROW  —  form + info
+───────────────────────────────────────────────────────────── */
+.bottomRow {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
+  align-items: start;
+}
+
+/* ── FORM ───────────────────────────────────────────────────── */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.formRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.fieldWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fieldLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+}
+
+.input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.035);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  color: var(--black);
+  font-family: var(--font-sans, var(--font-body));
+  font-size: 14px;
+  font-weight: 300;
+  padding: 14px 18px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  resize: vertical;
+  /* Subtle 3D inset feel */
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+.input::placeholder { color: var(--gray-400); }
+.input:focus {
+  border-color: rgba(0, 0, 0, 0.45);
+  background: rgba(0, 0, 0, 0.06);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08), 0 0 0 2px rgba(0,0,0,0.06);
+}
+
+/* Submit button — black bg, white text, wipe on hover */
+.submitBtn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--white);
+  background: var(--black);
+  border: 1px solid var(--black);
+  padding: 15px 34px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.25s;
+  margin-top: 8px;
+}
+.submitBtn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  transform: translateX(-101%);
+  transition: transform 0.3s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.submitBtn:hover::after { transform: translateX(0); }
+.submitBtn:hover { color: var(--black); }
+.submitBtn > * { position: relative; z-index: 1; }
+
+/* ── INFO COLUMN ────────────────────────────────────────────── */
+.infoCol {
+  display: flex;
+  flex-direction: column;
+  padding-top: 8px;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+}
+.infoItem:first-child { border-top: 1px solid rgba(0, 0, 0, 0.07); }
+
+.infoIcon {
+  font-size: 18px;
+  color: var(--black);
+  min-width: 28px;
+  padding-top: 2px;
+  opacity: 0.6;
+}
+
+.infoLabel {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+  margin-bottom: 4px;
+}
+
+.infoValue {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--black);
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+a.infoValue:hover { opacity: 0.55; }
+
+/* Social buttons */
+.socialRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.socialBtn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gray-600);
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  padding: 8px 14px;
+  text-decoration: none;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.socialBtn:hover {
+  color: var(--white);
+  background: var(--black);
+  border-color: var(--black);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MINI CUBE GRID  — decorative animated 4×4 grid of raising squares
+   CSS-only: each cube has a stagger via inline animationDelay
+───────────────────────────────────────────────────────────── */
+.cubeMini {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 5px;
+  margin-top: 36px;
+  perspective: 400px;
+}
+
+.cubeMiniTile {
+  aspect-ratio: 1;
+  background: rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transform-origin: center bottom;
+  animation: cubeRaise 3.2s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
+}
+.cubeMiniTile:hover {
+  transform: translateZ(20px) scale(1.12) !important;
+  background: var(--black) !important;
+  animation-play-state: paused;
+}
+
+@keyframes cubeRaise {
+  0%, 100% { transform: translateZ(0)    scaleY(1);    background: rgba(0,0,0,0.06); }
+  50%       { transform: translateZ(14px) scaleY(1.05); background: rgba(0,0,0,0.12); }
+}
+
+/* ── FOOTER BAR ─────────────────────────────────────────────── */
+.footerBar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px 0;
+  margin-top: 80px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gray-400);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .topRow    { grid-template-columns: 1fr; }
+  .canvasPanel { height: 280px; }
+  .bottomRow { grid-template-columns: 1fr; gap: 56px; }
+}
+
+@media (max-width: 768px) {
+  .contact   { padding: 80px 24px 0; }
+  .formRow   { grid-template-columns: 1fr; }
+  .footerBar { flex-direction: column; gap: 10px; text-align: center; }
+  .hoverGrid { grid-template-columns: repeat(7, 1fr); }
+}
